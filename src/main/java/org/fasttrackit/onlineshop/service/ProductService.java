@@ -34,6 +34,13 @@ public class ProductService {
         return productRepository.save(product);
 
     }
+    public Product getProduct(long id){
+        LOGGER.info("Retrieving product{}", id);
+        //using optional
+        return productRepository.findById(id)
+                //lambda expressions
+                .orElseThrow(() -> new RuntimeException("Product " + id +" not found."));
 
+    }
 
 }
