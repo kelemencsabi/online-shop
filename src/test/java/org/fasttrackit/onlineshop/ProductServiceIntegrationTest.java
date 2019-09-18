@@ -11,8 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.TransactionSystemException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 
@@ -47,9 +46,33 @@ public class ProductServiceIntegrationTest {
 
     }
     @Test(expected = ResourceNotFoundException.class)
-    public void testGetProduct_whenNonExistingEntity_thenThrowNotFoundException(){
+    public void testGetProduct_whenNonExistingEntity_thenThrowResourceNotFoundException(){
         productService.getProduct(999999);
     }
+
+    @Test
+    public void testUpdateProduct_whenValidRequest_thenReturnProduct(){
+        Product createdProduct = createProduct();
+        SaveProductRequest request = new SaveProductRequest();
+        request.setName(createdProduct.getName()+"Updated");
+        request.setPrice(createdProduct.getPrice()+10);
+        request.setQuantity(createdProduct.getQuantity()+10);
+        Product updatedProduct = productService.updateProduct(createdProduct.getId(), request);
+        assertThat(updatedProduct,notNullValue());
+        assertThat(updatedProduct.getName(),is(request.getName()));
+        assertThat(updatedProduct.getPrice(),is(request.getPrice()));
+        assertThat(updatedProduct.getQuantity(),is(request.getQuantity()));
+    }
+    @Test(expected = ResourceNotFoundException.class)
+    public void testDeleteProduct_whenValidRequest_thenThrowResourceNotFoundException(){
+        Product createdProduct = createProduct();
+        Product createdProduct2 = createProduct();
+        productService.deleteProduct(createdProduct.getId());
+        productService.getProduct(createdProduct.getId());
+        productService.getProduct(createdProduct2.getId());
+
+    }
+
     private Product createProduct() {
         SaveProductRequest request = new SaveProductRequest();
         request.setName("Computer");
