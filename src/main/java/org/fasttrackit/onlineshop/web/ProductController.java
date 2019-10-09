@@ -3,6 +3,7 @@ package org.fasttrackit.onlineshop.web;
 import org.fasttrackit.onlineshop.domain.Product;
 import org.fasttrackit.onlineshop.service.ProductService;
 import org.fasttrackit.onlineshop.transfer.product.GetProductsRequest;
+import org.fasttrackit.onlineshop.transfer.product.ProductResponse;
 import org.fasttrackit.onlineshop.transfer.product.SaveProductRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-
+@CrossOrigin
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -37,8 +38,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<org.springframework.data.domain.Page<Product>> getProducts(GetProductsRequest request, Pageable pageable) {
-        Page<Product> products = productService.getProducts(request, pageable);
+    public ResponseEntity<org.springframework.data.domain.Page<ProductResponse>> getProducts(GetProductsRequest request, Pageable pageable) {
+        Page<ProductResponse> products = productService.getProducts(request, pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
